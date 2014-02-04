@@ -7,7 +7,7 @@
     <ProjectGuid>{F8FAF539-E365-4995-A695-499BA4AD31DB}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Snappy.NET</RootNamespace>
+    <RootNamespace>Snappy</RootNamespace>
     <AssemblyName>Snappy.NET</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -39,6 +39,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Native32.cs" />
+    <Compile Include="Native64.cs" />
+    <Compile Include="NativeProxy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
