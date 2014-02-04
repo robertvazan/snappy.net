@@ -11,6 +11,8 @@ namespace Snappy
 {
     abstract class NativeProxy
     {
+        public static NativeProxy Instance = IntPtr.Size == 4 ? (NativeProxy)Native32.Instance : Native64.Instance;
+
         protected NativeProxy(string name)
         {
             var assembly = Assembly.GetExecutingAssembly();
