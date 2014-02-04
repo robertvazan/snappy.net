@@ -2,3 +2,4 @@ syntax: glob
 obj
 bin
 *.suo
+native/*.dll
