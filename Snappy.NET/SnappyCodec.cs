@@ -116,6 +116,8 @@ namespace Snappy
 
         public static int GetUncompressedLength(byte[] input)
         {
+            if (input == null)
+                throw new ArgumentNullException();
             return GetUncompressedLength(input, 0, input.Length);
         }
 
@@ -133,6 +135,8 @@ namespace Snappy
 
         public static bool Validate(byte[] input)
         {
+            if (input == null)
+                throw new ArgumentNullException();
             return Validate(input, 0, input.Length);
         }
     }
