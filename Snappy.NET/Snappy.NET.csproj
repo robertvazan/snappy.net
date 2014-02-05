@@ -49,8 +49,8 @@
     <Compile Include="SnappyStatus.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="native\snappy32.dll" />
-    <Resource Include="native\snappy64.dll" />
+    <Resource Include="..\native\snappy32.dll" />
+    <Resource Include="..\native\snappy64.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
