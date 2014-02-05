@@ -18,7 +18,7 @@ namespace Snappy
 
         public void Write(byte[] data)
         {
-            Serializer.Write(0, 0, SnappyCodec.Compress(data));
+            Serializer.Write(0, Crc32C.Compute(data), SnappyCodec.Compress(data));
         }
     }
 }

@@ -23,10 +23,13 @@ namespace Snappy
             var data = Deserializer.Read(out type, out checksum);
             if (data == null)
                 return null;
-            else if (type == 1)
-                return data;
             else
-                return SnappyCodec.Uncompress(data);
+            {
+                var uncompressed = type == 1 ? data : SnappyCodec.Uncompress(data);
+                if (Crc32C.Compute(uncompressed) != checksum)
+                    throw new InvalidDataException("Incorrect checksum");
+                return uncompressed;
+            }
         }
     }
 }
