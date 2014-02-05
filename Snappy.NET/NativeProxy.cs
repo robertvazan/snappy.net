@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Resources;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,7 +13,7 @@ namespace Snappy
 {
     abstract class NativeProxy
     {
-        public static NativeProxy Instance = IntPtr.Size == 4 ? (NativeProxy)Native32.Instance : Native64.Instance;
+        public static readonly NativeProxy Instance = IntPtr.Size == 4 ? (NativeProxy)new Native32() : new Native64();
 
         protected NativeProxy(string name)
         {
@@ -20,7 +22,7 @@ namespace Snappy
             Directory.CreateDirectory(folder);
             var path = Path.Combine(folder, name);
             byte[] contents;
-            using (var input = assembly.GetManifestResourceStream(name))
+            using (var input = assembly.GetManifestResourceStream("Snappy." + name))
             using (var buffer = new MemoryStream())
             {
                 input.CopyTo(buffer);

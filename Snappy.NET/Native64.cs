@@ -9,9 +9,7 @@ namespace Snappy
 {
     class Native64 : NativeProxy
     {
-        public static Native64 Instance = new Native64();
-
-        Native64() : base("snappy64.dll") { }
+        public Native64() : base("snappy64.dll") { }
 
         public unsafe override SnappyStatus Compress(byte *input, int inLength, byte *output, ref int outLength)
         {
