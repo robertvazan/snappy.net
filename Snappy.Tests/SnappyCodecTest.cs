@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -73,14 +74,14 @@ namespace Snappy.Tests
             Assert.Throws<ArgumentOutOfRangeException>(() => SnappyCodec.Uncompress(compressed, -1, uncompressed.Length, buffer, 0));
             Assert.Throws<ArgumentOutOfRangeException>(() => SnappyCodec.Uncompress(compressed, 0, -1, buffer, 0));
             Assert.Throws<ArgumentOutOfRangeException>(() => SnappyCodec.Uncompress(compressed, compressed.Length - 2, 4, buffer, 0));
-            Assert.Throws<ArgumentOutOfRangeException>(() => SnappyCodec.Uncompress(compressed, 0, 0, buffer, 0));
-            Assert.Throws<ArgumentOutOfRangeException>(() => SnappyCodec.Uncompress(compressed, compressed.Length, compressed.Length, buffer, 0));
+            Assert.Throws<InvalidDataException>(() => SnappyCodec.Uncompress(compressed, 0, 0, buffer, 0));
+            Assert.Throws<InvalidDataException>(() => SnappyCodec.Uncompress(compressed, compressed.Length, 0, buffer, 0));
             Assert.Throws<ArgumentOutOfRangeException>(() => SnappyCodec.Uncompress(compressed, 0, compressed.Length, buffer, -1));
             Assert.Throws<ArgumentOutOfRangeException>(() => SnappyCodec.Uncompress(compressed, 0, compressed.Length, buffer, 101));
             Assert.Throws<ArgumentOutOfRangeException>(() => SnappyCodec.Uncompress(compressed, 0, compressed.Length, buffer, 97));
             var rubbish = new byte[10];
             new Random(0).NextBytes(rubbish);
-            Assert.Throws<ArgumentException>(() => SnappyCodec.Uncompress(rubbish, 0, rubbish.Length, buffer, 0));
+            Assert.Throws<InvalidDataException>(() => SnappyCodec.Uncompress(rubbish, 0, rubbish.Length, buffer, 0));
         }
 
         [Test]
@@ -94,10 +95,10 @@ namespace Snappy.Tests
             Assert.Throws<ArgumentOutOfRangeException>(() => SnappyCodec.GetUncompressedLength(compressed, -1, uncompressed.Length));
             Assert.Throws<ArgumentOutOfRangeException>(() => SnappyCodec.GetUncompressedLength(compressed, 0, -1));
             Assert.Throws<ArgumentOutOfRangeException>(() => SnappyCodec.GetUncompressedLength(compressed, compressed.Length - 2, 4));
-            Assert.Throws<ArgumentOutOfRangeException>(() => SnappyCodec.GetUncompressedLength(compressed, 0, 0));
-            Assert.Throws<ArgumentOutOfRangeException>(() => SnappyCodec.GetUncompressedLength(compressed, compressed.Length, compressed.Length));
+            Assert.Throws<InvalidDataException>(() => SnappyCodec.GetUncompressedLength(compressed, 0, 0));
+            Assert.Throws<InvalidDataException>(() => SnappyCodec.GetUncompressedLength(compressed, compressed.Length, 0));
             var rubbish = Enumerable.Repeat((byte)0xff, 10).ToArray();
-            Assert.Throws<ArgumentException>(() => SnappyCodec.GetUncompressedLength(rubbish, 0, rubbish.Length));
+            Assert.Throws<InvalidDataException>(() => SnappyCodec.GetUncompressedLength(rubbish, 0, rubbish.Length));
         }
 
         [Test]
@@ -110,6 +111,8 @@ namespace Snappy.Tests
             var rubbish = new byte[10];
             new Random(0).NextBytes(rubbish);
             Assert.IsFalse(SnappyCodec.Validate(rubbish, 0, rubbish.Length));
+            Assert.IsFalse(SnappyCodec.Validate(compressed, 0, 0));
+            Assert.IsFalse(SnappyCodec.Validate(compressed, compressed.Length, 0));
         }
 
         [Test]
@@ -123,8 +126,6 @@ namespace Snappy.Tests
             Assert.Throws<ArgumentOutOfRangeException>(() => SnappyCodec.Validate(compressed, -1, uncompressed.Length));
             Assert.Throws<ArgumentOutOfRangeException>(() => SnappyCodec.Validate(compressed, 0, -1));
             Assert.Throws<ArgumentOutOfRangeException>(() => SnappyCodec.Validate(compressed, compressed.Length - 2, 4));
-            Assert.Throws<ArgumentOutOfRangeException>(() => SnappyCodec.Validate(compressed, 0, 0));
-            Assert.Throws<ArgumentOutOfRangeException>(() => SnappyCodec.Validate(compressed, compressed.Length, compressed.Length));
         }
     }
 }

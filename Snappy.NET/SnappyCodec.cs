@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -31,7 +32,7 @@ namespace Snappy
                 else if (status == SnappyStatus.BufferTooSmall)
                     throw new ArgumentOutOfRangeException("Output array is too small");
                 else
-                    throw new ArgumentException("Invalid input");
+                    throw new InvalidDataException("Invalid input");
             }
         }
 
@@ -56,7 +57,7 @@ namespace Snappy
             if (offset < 0 || length < 0 || offset + length > input.Length)
                 throw new ArgumentOutOfRangeException("Selected range is outside the bounds of the input array");
             if (length == 0)
-                throw new ArgumentOutOfRangeException("Compressed block cannot be empty");
+                throw new InvalidDataException("Compressed block cannot be empty");
             if (outOffset < 0 || outOffset > output.Length)
                 throw new ArgumentOutOfRangeException("Output offset is outside the bounds of the output array");
             int outLength = output.Length - outOffset;
@@ -74,7 +75,7 @@ namespace Snappy
                 else if (status == SnappyStatus.BufferTooSmall)
                     throw new ArgumentOutOfRangeException("Output array is too small");
                 else
-                    throw new ArgumentException("Input is not a valid snappy-compressed block");
+                    throw new InvalidDataException("Input is not a valid snappy-compressed block");
             }
         }
 
@@ -102,7 +103,7 @@ namespace Snappy
             if (offset < 0 || length < 0 || offset + length > input.Length)
                 throw new ArgumentOutOfRangeException("Selected range is outside the bounds of the input array");
             if (length == 0)
-                throw new ArgumentOutOfRangeException("Compressed block cannot be empty");
+                throw new InvalidDataException("Compressed block cannot be empty");
             fixed (byte* inputPtr = &input[offset])
             {
                 int outLength;
@@ -110,7 +111,7 @@ namespace Snappy
                 if (status == SnappyStatus.Ok)
                     return outLength;
                 else
-                    throw new ArgumentException("Input is not a valid snappy-compressed block");
+                    throw new InvalidDataException("Input is not a valid snappy-compressed block");
             }
         }
 
@@ -128,7 +129,7 @@ namespace Snappy
             if (offset < 0 || length < 0 || offset + length > input.Length)
                 throw new ArgumentOutOfRangeException("Selected range is outside the bounds of the input array");
             if (length == 0)
-                throw new ArgumentOutOfRangeException("Compressed block cannot be empty");
+                return false;
             fixed (byte* inputPtr = &input[offset])
                 return NativeProxy.Instance.ValidateCompressedBuffer(inputPtr, length) == SnappyStatus.Ok;
         }
