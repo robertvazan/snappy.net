@@ -3,3 +3,4 @@ obj
 bin
 *.suo
 native/*.dll
+packages/*
