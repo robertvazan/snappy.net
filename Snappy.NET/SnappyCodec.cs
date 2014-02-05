@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Snappy
 {
-    public static class SnappyBlock
+    public static class SnappyCodec
     {
         public static unsafe int Compress(byte[] input, int offset, int length, byte[] output, int outOffset)
         {
