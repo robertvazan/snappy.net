@@ -42,19 +42,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Crc32C.cs" />
-    <Compile Include="FrameCompressor.cs" />
-    <Compile Include="FrameDecompressor.cs" />
-    <Compile Include="FrameDeserializer.cs" />
-    <Compile Include="FrameSerializer.cs" />
     <Compile Include="Native32.cs" />
     <Compile Include="Native64.cs" />
     <Compile Include="NativeProxy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SnappyCodec.cs" />
+    <Compile Include="SnappyFrame.cs" />
+    <Compile Include="SnappyFrameType.cs" />
     <Compile Include="SnappyStatus.cs" />
     <Compile Include="SnappyStream.cs" />
-    <Compile Include="StreamChunker.cs" />
-    <Compile Include="StreamDechunker.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="..\native\snappy32.dll" />

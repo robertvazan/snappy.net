@@ -37,17 +37,17 @@ namespace Snappy
             }
         }
 
-        public static uint Compute(byte[] data)
+        public static uint Compute(byte[] data, int offset, int count)
         {
             uint crc = ~0u;
-            for (int i = 0; i < data.Length; ++i)
-                crc = crc32c_table[0][(crc ^ data[i]) & 0xff] ^ (crc >> 8);
+            for (int i = 0; i < count; ++i)
+                crc = crc32c_table[0][(crc ^ data[offset + i]) & 0xff] ^ (crc >> 8);
             return ~crc;
         }
 
-        public static uint ComputeMasked(byte[] data)
+        public static uint ComputeMasked(byte[] data, int offset, int count)
         {
-            var checksum = Compute(data);
+            var checksum = Compute(data, offset, count);
             return ((checksum >> 15) | (checksum << 17)) + 0xa282ead8;
         }
     }
