@@ -38,7 +38,6 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
@@ -53,9 +52,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Snappy.NET\Snappy.NET.csproj">
+    <ProjectReference Include="..\Snappy.NET\Snappy.NET.net20.csproj">
       <Project>{f8faf539-e365-4995-a695-499ba4ad31db}</Project>
-      <Name>Snappy.NET</Name>
+      <Name>Snappy.NET.net20</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
