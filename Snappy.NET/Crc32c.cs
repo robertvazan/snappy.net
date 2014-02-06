@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Snappy
 {
     class Crc32C
     {
         const uint POLY = 0x82f63b78;
-        static readonly uint[][] crc32c_table = Enumerable.Range(0, 8).Select(i => new uint[256]).ToArray();
+        static readonly uint[][] crc32c_table = new uint[8][];
 
         static Crc32C()
         {
+            for (int i = 0; i < 8; ++i)
+                crc32c_table[i] = new uint[256];
             for (uint n = 0; n < 256; n++)
             {
                 uint crc = n;

@@ -2,12 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Resources;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Snappy
 {
@@ -25,11 +23,14 @@ namespace Snappy
             using (var input = assembly.GetManifestResourceStream("Snappy." + name))
             using (var buffer = new MemoryStream())
             {
-                input.CopyTo(buffer);
+                byte[] block = new byte[4096];
+                int copied;
+                while ((copied = input.Read(block, 0, block.Length)) != 0)
+                    buffer.Write(block, 0, copied);
                 buffer.Close();
                 contents = buffer.ToArray();
             }
-            if (!File.Exists(path) || !File.ReadAllBytes(path).SequenceEqual(contents))
+            if (!File.Exists(path) || !Utils.BuffersEqual(File.ReadAllBytes(path), contents))
             {
                 using (var output = File.Open(path, FileMode.CreateNew, FileAccess.Write, FileShare.None))
                     output.Write(contents, 0, contents.Length);

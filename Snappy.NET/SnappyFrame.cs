@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Threading;
+#if SNAPPY_ASYNC
 using System.Threading.Tasks;
+#endif
 
 namespace Snappy
 {
@@ -146,9 +147,9 @@ namespace Snappy
                     DataLength = 6;
                     BufferUsage = 0;
                     Checksum = 0;
-                    var readId = new byte[6];
-                    EnsureRead(stream, readId, 0, 6);
-                    if (!readId.SequenceEqual(StreamIdentifier))
+                    EnsureBuffer(6);
+                    EnsureRead(stream, Buffer, 0, 6);
+                    if (!Utils.BuffersEqual(Buffer, StreamIdentifier, 6))
                         throw new InvalidDataException();
                 }
                 else
@@ -162,6 +163,7 @@ namespace Snappy
             }
         }
 
+#if SNAPPY_ASYNC
         public Task<bool> ReadAsync(Stream stream) { return ReadAsync(stream, CancellationToken.None); }
 
         public async Task<bool> ReadAsync(Stream stream, CancellationToken cancellation)
@@ -203,9 +205,9 @@ namespace Snappy
                     DataLength = 6;
                     BufferUsage = 0;
                     Checksum = 0;
-                    var readId = new byte[6];
-                    await EnsureReadAsync(stream, readId, 0, 6, cancellation);
-                    if (!readId.SequenceEqual(StreamIdentifier))
+                    EnsureBuffer(6);
+                    await EnsureReadAsync(stream, Buffer, 0, 6, cancellation);
+                    if (!Utils.BuffersEqual(Buffer, StreamIdentifier, 6))
                         throw new InvalidDataException();
                 }
                 else
@@ -218,6 +220,7 @@ namespace Snappy
                 throw;
             }
         }
+#endif
 
         public void Write(Stream stream)
         {
@@ -249,6 +252,7 @@ namespace Snappy
                 stream.Write(Buffer, 0, BufferUsage);
         }
 
+#if SNAPPY_ASYNC
         public Task WriteAsync(Stream stream) { return WriteAsync(stream, CancellationToken.None); }
 
         public async Task WriteAsync(Stream stream, CancellationToken cancellation)
@@ -280,6 +284,7 @@ namespace Snappy
             else
                 await stream.WriteAsync(Buffer, 0, BufferUsage, cancellation);
         }
+#endif
 
         void EnsureRead(Stream stream, byte[] buffer, int offset, int count)
         {
@@ -293,6 +298,7 @@ namespace Snappy
             }
         }
 
+#if SNAPPY_ASYNC
         async Task EnsureReadAsync(Stream stream, byte[] buffer, int offset, int count, CancellationToken cancellation)
         {
             while (count > 0)
@@ -304,6 +310,7 @@ namespace Snappy
                 count -= read;
             }
         }
+#endif
 
         void SkipBytes(Stream stream, int count)
         {
@@ -317,6 +324,7 @@ namespace Snappy
             }
         }
 
+#if SNAPPY_ASYNC
         async Task SkipBytesAsync(Stream stream, int count, CancellationToken cancellation)
         {
             EnsureBuffer(Math.Min(count, MaxFrameSize));
@@ -328,6 +336,7 @@ namespace Snappy
                 count -= read;
             }
         }
+#endif
 
         void WriteZeroes(Stream stream, int count)
         {
@@ -343,6 +352,7 @@ namespace Snappy
             }
         }
 
+#if SNAPPY_ASYNC
         async Task WriteZeroesAsync(Stream stream, int count, CancellationToken cancellation)
         {
             var reserved = Math.Min(count, MaxFrameSize);
@@ -356,6 +366,7 @@ namespace Snappy
                 count -= written;
             }
         }
+#endif
 
         void CheckRange(byte[] buffer, int offset, int count)
         {

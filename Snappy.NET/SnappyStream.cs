@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
-using System.Linq;
 using System.Text;
 using System.Threading;
+#if SNAPPY_ASYNC
 using System.Threading.Tasks;
+#endif
 
 namespace Snappy
 {
@@ -73,6 +74,7 @@ namespace Snappy
             }
         }
 
+#if SNAPPY_ASYNC
         public async override Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellation)
         {
             try
@@ -100,6 +102,7 @@ namespace Snappy
                 throw;
             }
         }
+#endif
 
         public override int ReadByte()
         {
@@ -146,6 +149,7 @@ namespace Snappy
             }
         }
 
+#if SNAPPY_ASYNC
         public async override Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellation)
         {
             try
@@ -170,6 +174,7 @@ namespace Snappy
                 throw;
             }
         }
+#endif
 
         public override void WriteByte(byte value)
         {
@@ -209,6 +214,7 @@ namespace Snappy
             }
         }
 
+#if SNAPPY_ASYNC
         public async override Task FlushAsync(CancellationToken cancellation)
         {
             try
@@ -228,6 +234,7 @@ namespace Snappy
                 throw;
             }
         }
+#endif
 
         public override void SetLength(long value) { throw new NotSupportedException(); }
         public override long Seek(long offset, SeekOrigin origin) { throw new NotSupportedException(); }
@@ -252,6 +259,7 @@ namespace Snappy
             }
         }
 
+#if SNAPPY_ASYNC
         async Task InitializeStreamAsync(CancellationToken cancellation)
         {
             if (!InitializedStream)
@@ -271,6 +279,7 @@ namespace Snappy
                 InitializedStream = true;
             }
         }
+#endif
 
         bool EnsureAvailable()
         {
@@ -289,6 +298,7 @@ namespace Snappy
             return true;
         }
 
+#if SNAPPY_ASYNC
         async Task<bool> EnsureAvailableAsync(CancellationToken cancellation)
         {
             if (BufferRead >= BufferUsage)
@@ -305,6 +315,7 @@ namespace Snappy
             }
             return true;
         }
+#endif
 
         void EnsureCompressionMode()
         {

@@ -6,7 +6,9 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Text;
+#if SNAPPY_ASYNC
 using System.Threading.Tasks;
+#endif
 
 namespace Snappy.Tests
 {
