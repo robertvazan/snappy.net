@@ -38,7 +38,8 @@ namespace Snappy
 
         protected override void Dispose(bool disposing)
         {
-            Flush();
+            if (Mode == CompressionMode.Compress)
+                Flush();
             if (!LeaveOpen)
                 Stream.Close();
             Stream = null;
@@ -54,18 +55,8 @@ namespace Snappy
                 int total = 0;
                 while (count > 0)
                 {
-                    if (BufferRead >= BufferUsage)
-                    {
-                        do
-                        {
-                            if (!Frame.Read(Stream))
-                                return total;
-                        } while (Frame.Type != SnappyFrameType.Compressed && Frame.Type != SnappyFrameType.Uncompressed || Frame.DataLength == 0);
-                        EnsureBuffer(Frame.DataLength);
-                        BufferRead = 0;
-                        BufferUsage = Frame.DataLength;
-                        Frame.GetData(Buffer);
-                    }
+                    if (!EnsureAvailable())
+                        return total;
                     int append = Math.Min(count, BufferUsage - BufferRead);
                     Array.Copy(Buffer, BufferRead, buffer, offset, append);
                     total += append;
@@ -92,18 +83,8 @@ namespace Snappy
                 int total = 0;
                 while (count > 0)
                 {
-                    if (BufferRead >= BufferUsage)
-                    {
-                        do
-                        {
-                            if (!await Frame.ReadAsync(Stream, cancellation))
-                                return total;
-                        } while (Frame.Type != SnappyFrameType.Compressed && Frame.Type != SnappyFrameType.Uncompressed || Frame.DataLength == 0);
-                        EnsureBuffer(Frame.DataLength);
-                        BufferRead = 0;
-                        BufferUsage = Frame.DataLength;
-                        Frame.GetData(Buffer);
-                    }
+                    if (!await EnsureAvailableAsync(cancellation))
+                        return total;
                     int append = Math.Min(count, BufferUsage - BufferRead);
                     Array.Copy(Buffer, BufferRead, buffer, offset, append);
                     total += append;
@@ -112,6 +93,25 @@ namespace Snappy
                     BufferRead += append;
                 }
                 return total;
+            }
+            catch
+            {
+                BadStream = true;
+                throw;
+            }
+        }
+
+        public override int ReadByte()
+        {
+            try
+            {
+                EnsureDecompressionMode();
+                InitializeStream();
+                if (!EnsureAvailable())
+                    return -1;
+                byte result = Buffer[BufferRead];
+                ++BufferRead;
+                return result;
             }
             catch
             {
@@ -134,6 +134,7 @@ namespace Snappy
                     Array.Copy(buffer, offset, Buffer, BufferUsage, append);
                     offset += append;
                     count -= append;
+                    BufferUsage += append;
                     if (BufferUsage == SnappyFrame.MaxFrameSize)
                         Flush();
                 }
@@ -162,6 +163,25 @@ namespace Snappy
                     if (BufferUsage == SnappyFrame.MaxFrameSize)
                         await FlushAsync(cancellation);
                 }
+            }
+            catch
+            {
+                BadStream = true;
+                throw;
+            }
+        }
+
+        public override void WriteByte(byte value)
+        {
+            try
+            {
+                EnsureCompressionMode();
+                InitializeStream();
+                EnsureBuffer(BufferUsage + 1);
+                Buffer[BufferUsage] = value;
+                ++BufferUsage;
+                if (BufferUsage == SnappyFrame.MaxFrameSize)
+                    Flush();
             }
             catch
             {
@@ -250,6 +270,40 @@ namespace Snappy
                 }
                 InitializedStream = true;
             }
+        }
+
+        bool EnsureAvailable()
+        {
+            if (BufferRead >= BufferUsage)
+            {
+                do
+                {
+                    if (!Frame.Read(Stream))
+                        return false;
+                } while (Frame.Type != SnappyFrameType.Compressed && Frame.Type != SnappyFrameType.Uncompressed || Frame.DataLength == 0);
+                EnsureBuffer(Frame.DataLength);
+                BufferRead = 0;
+                BufferUsage = Frame.DataLength;
+                Frame.GetData(Buffer);
+            }
+            return true;
+        }
+
+        async Task<bool> EnsureAvailableAsync(CancellationToken cancellation)
+        {
+            if (BufferRead >= BufferUsage)
+            {
+                do
+                {
+                    if (!await Frame.ReadAsync(Stream, cancellation))
+                        return false;
+                } while (Frame.Type != SnappyFrameType.Compressed && Frame.Type != SnappyFrameType.Uncompressed || Frame.DataLength == 0);
+                EnsureBuffer(Frame.DataLength);
+                BufferRead = 0;
+                BufferUsage = Frame.DataLength;
+                Frame.GetData(Buffer);
+            }
+            return true;
         }
 
         void EnsureCompressionMode()
