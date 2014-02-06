@@ -36,13 +36,12 @@ namespace Snappy
             LeaveOpen = leaveOpen;
         }
 
-        public override void Close()
+        protected override void Dispose(bool disposing)
         {
             Flush();
             if (!LeaveOpen)
                 Stream.Close();
             Stream = null;
-            base.Close();
         }
 
         public override int Read(byte[] buffer, int offset, int count)
