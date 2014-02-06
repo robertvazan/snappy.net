@@ -44,5 +44,11 @@ namespace Snappy
                 crc = crc32c_table[0][(crc ^ data[i]) & 0xff] ^ (crc >> 8);
             return ~crc;
         }
+
+        public static uint ComputeMasked(byte[] data)
+        {
+            var checksum = Compute(data);
+            return ((checksum >> 15) | (checksum << 17)) + 0xa282ead8;
+        }
     }
 }

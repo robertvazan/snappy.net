@@ -26,7 +26,7 @@ namespace Snappy
             else
             {
                 var uncompressed = type == 1 ? data : SnappyCodec.Uncompress(data);
-                if (Crc32C.Compute(uncompressed) != checksum)
+                if (Crc32C.ComputeMasked(uncompressed) != checksum)
                     throw new InvalidDataException("Incorrect checksum");
                 return uncompressed;
             }
