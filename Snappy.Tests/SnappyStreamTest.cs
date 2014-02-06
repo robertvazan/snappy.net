@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -19,9 +20,11 @@ namespace Snappy.Tests
         {
             var testdata = Directory.GetFiles(Benchmark.DataPath).Select(f => File.ReadAllBytes(f)).ToArray();
             long totalData = 0;
-            for (int i = 0; i < 10; ++i)
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+            for (int i = 0; i < 50; ++i)
             {
-                int count = Random.Next(1, 21);
+                int count = Random.Next(1, 6);
                 var sequence = Enumerable.Range(0, count).Select(n => testdata[Random.Next(testdata.Length)]).ToArray();
                 totalData += sequence.Sum(f => f.Length);
                 var stream = new MemoryStream();
@@ -44,7 +47,8 @@ namespace Snappy.Tests
                     Assert.AreEqual(-1, decompressor.ReadByte());
                 }
             }
-            Console.WriteLine("Ran {0} MB through the stream", totalData / 1024 / 1024);
+            stopwatch.Stop();
+            Console.WriteLine("Ran {0} MB through the stream, that's {1:0.0} MB/s", totalData / 1024 / 1024, totalData / stopwatch.Elapsed.Seconds / 1024 / 1024);
         }
     }
 }
