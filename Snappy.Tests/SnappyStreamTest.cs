@@ -24,9 +24,9 @@ namespace Snappy.Tests
             long totalData = 0;
             var stopwatch = new Stopwatch();
             stopwatch.Start();
-            for (int i = 0; i < 50; ++i)
+            for (int i = 0; i < 100; ++i)
             {
-                int count = Random.Next(1, 6);
+                int count = Random.Next(1, 21);
                 var sequence = Enumerable.Range(0, count).Select(n => testdata[Random.Next(testdata.Length)]).ToArray();
                 totalData += sequence.Sum(f => f.Length);
                 var stream = new MemoryStream();
@@ -44,13 +44,21 @@ namespace Snappy.Tests
                         var decompressed = new byte[file.Length];
                         int decompressedLength = decompressor.Read(decompressed, 0, decompressed.Length);
                         Assert.AreEqual(file.Length, decompressedLength);
-                        CollectionAssert.AreEqual(file, decompressed);
+                        CheckBuffers(file, decompressed);
                     }
                     Assert.AreEqual(-1, decompressor.ReadByte());
                 }
             }
             stopwatch.Stop();
-            Console.WriteLine("Ran {0} MB through the stream, that's {1:0.0} MB/s", totalData / 1024 / 1024, totalData / stopwatch.Elapsed.Seconds / 1024 / 1024);
+            Console.WriteLine("Ran {0} MB through the stream, that's {1:0.0} MB/s", totalData / 1024 / 1024, totalData / stopwatch.Elapsed.TotalSeconds / 1024 / 1024);
+        }
+
+        void CheckBuffers(byte[] expected, byte[] actual)
+        {
+            Assert.AreEqual(expected.Length, actual.Length);
+            for (int i = 0; i < expected.Length; ++i)
+                if (expected[i] != actual[i])
+                    Assert.Fail();
         }
     }
 }
