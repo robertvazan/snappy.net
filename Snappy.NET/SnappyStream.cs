@@ -38,6 +38,7 @@ namespace Snappy
 
         public override void Close()
         {
+            Flush();
             if (!LeaveOpen)
                 Stream.Close();
             Stream = null;
@@ -88,7 +89,7 @@ namespace Snappy
             {
                 EnsureDecompressionMode();
                 ValidateRange(buffer, offset, count);
-                InitializeStream();
+                await InitializeStreamAsync(cancellation);
                 int total = 0;
                 while (count > 0)
                 {
@@ -151,7 +152,7 @@ namespace Snappy
             {
                 EnsureCompressionMode();
                 ValidateRange(buffer, offset, count);
-                InitializeStream();
+                await InitializeStreamAsync(cancellation);
                 while (count > 0)
                 {
                     int append = Math.Min(count, SnappyFrame.MaxFrameSize - BufferUsage);
@@ -194,6 +195,7 @@ namespace Snappy
             try
             {
                 EnsureCompressionMode();
+                await InitializeStreamAsync(cancellation);
                 if (BufferUsage > 0)
                 {
                     Frame.SetCompressed(Buffer, 0, BufferUsage);
@@ -223,6 +225,26 @@ namespace Snappy
                 else
                 {
                     if (!Frame.Read(Stream))
+                        throw new EndOfStreamException();
+                    if (Frame.Type != SnappyFrameType.StreamIdentifier)
+                        throw new InvalidDataException();
+                }
+                InitializedStream = true;
+            }
+        }
+
+        async Task InitializeStreamAsync(CancellationToken cancellation)
+        {
+            if (!InitializedStream)
+            {
+                if (Mode == CompressionMode.Compress)
+                {
+                    Frame.SetStreamIdentifier();
+                    await Frame.WriteAsync(Stream, cancellation);
+                }
+                else
+                {
+                    if (!await Frame.ReadAsync(Stream, cancellation))
                         throw new EndOfStreamException();
                     if (Frame.Type != SnappyFrameType.StreamIdentifier)
                         throw new InvalidDataException();
