@@ -46,6 +46,7 @@
     <Compile Include="CodecThroughputTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SnappyCodecTest.cs" />
+    <Compile Include="SnappyStreamTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
