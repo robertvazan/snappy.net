@@ -6,6 +6,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Text;
+using System.Threading;
 #if SNAPPY_ASYNC
 using System.Threading.Tasks;
 #endif
@@ -24,33 +25,61 @@ namespace Snappy.Tests
             long totalData = 0;
             var stopwatch = new Stopwatch();
             stopwatch.Start();
-            for (int i = 0; i < 100; ++i)
+            while (stopwatch.Elapsed < TimeSpan.FromSeconds(3))
             {
                 int count = Random.Next(1, 21);
                 var sequence = Enumerable.Range(0, count).Select(n => testdata[Random.Next(testdata.Length)]).ToArray();
                 totalData += sequence.Sum(f => f.Length);
-                var stream = new MemoryStream();
+                var stream = new TestStream();
+                Action decompress = () =>
+                {
+                    using (var decompressor = new SnappyStream(stream, CompressionMode.Decompress))
+                    {
+                        foreach (var file in sequence)
+                        {
+                            var decompressed = new byte[file.Length];
+                            ReadAll(decompressor, decompressed, 0, decompressed.Length);
+                            CheckBuffers(file, decompressed);
+                        }
+                        Assert.AreEqual(-1, decompressor.ReadByte());
+                    }
+                };
+#if SNAPPY_ASYNC
+                var decompression = Task.Run(decompress);
+#else
+                ManualResetEvent done = new ManualResetEvent(false);
+                ThreadPool.QueueUserWorkItem(ctx =>
+                {
+                    decompress();
+                    done.Set();
+                });
+#endif
                 using (var compressor = new SnappyStream(stream, CompressionMode.Compress))
                 {
                     foreach (var file in sequence)
                         compressor.Write(file, 0, file.Length);
                     compressor.Flush();
                 }
-                stream = new MemoryStream(stream.ToArray());
-                using (var decompressor = new SnappyStream(stream, CompressionMode.Decompress))
-                {
-                    foreach (var file in sequence)
-                    {
-                        var decompressed = new byte[file.Length];
-                        int decompressedLength = decompressor.Read(decompressed, 0, decompressed.Length);
-                        Assert.AreEqual(file.Length, decompressedLength);
-                        CheckBuffers(file, decompressed);
-                    }
-                    Assert.AreEqual(-1, decompressor.ReadByte());
-                }
+#if SNAPPY_ASYNC
+                decompression.Wait();
+#else
+                done.WaitOne();
+#endif
             }
             stopwatch.Stop();
             Console.WriteLine("Ran {0} MB through the stream, that's {1:0.0} MB/s", totalData / 1024 / 1024, totalData / stopwatch.Elapsed.TotalSeconds / 1024 / 1024);
+        }
+
+        void ReadAll(Stream stream, byte[] buffer, int offset, int count)
+        {
+            while (count > 0)
+            {
+                int read = stream.Read(buffer, offset, count);
+                if (read <= 0)
+                    throw new EndOfStreamException();
+                offset += read;
+                count -= read;
+            }
         }
 
         void CheckBuffers(byte[] expected, byte[] actual)
