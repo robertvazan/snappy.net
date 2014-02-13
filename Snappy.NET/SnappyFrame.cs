@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 #if SNAPPY_ASYNC
 using System.Threading.Tasks;
+using Crc32C;
 #endif
 
 namespace Snappy
@@ -68,7 +69,7 @@ namespace Snappy
             EnsureBuffer(SnappyCodec.GetMaxCompressedLength(count));
             BufferUsage = SnappyCodec.Compress(data, offset, count, Buffer, 0);
             DataLength = count;
-            Checksum = Crc32C.ComputeMasked(data, offset, count);
+            Checksum = ComputeMasked(data, offset, count);
             Type = SnappyFrameType.Compressed;
         }
 
@@ -85,7 +86,7 @@ namespace Snappy
             Array.Copy(data, offset, Buffer, 0, count);
             BufferUsage = count;
             DataLength = count;
-            Checksum = Crc32C.ComputeMasked(data, offset, count);
+            Checksum = ComputeMasked(data, offset, count);
             Type = SnappyFrameType.Uncompressed;
         }
 
@@ -99,7 +100,7 @@ namespace Snappy
             if (Type == SnappyFrameType.Compressed)
             {
                 var count = SnappyCodec.Uncompress(Buffer, 0, BufferUsage, buffer, offset);
-                if (Crc32C.ComputeMasked(buffer, offset, count) != Checksum)
+                if (ComputeMasked(buffer, offset, count) != Checksum)
                     throw new InvalidDataException();
             }
             else if (Type == SnappyFrameType.Uncompressed)
@@ -367,6 +368,12 @@ namespace Snappy
             }
         }
 #endif
+
+        static uint ComputeMasked(byte[] data, int offset, int count)
+        {
+            var checksum = Crc32CAlgorithm.Compute(data, offset, count);
+            return ((checksum >> 15) | (checksum << 17)) + 0xa282ead8;
+        }
 
         void CheckRange(byte[] buffer, int offset, int count)
         {
