@@ -38,6 +38,7 @@ namespace Snappy.Tests
         protected override void Dispose(bool disposing)
         {
             ClosedAt = TotalWritten;
+            ReadSemaphore.Add(1);
         }
 
         public override void Write(byte[] buffer, int offset, int count)
@@ -68,6 +69,7 @@ namespace Snappy.Tests
                     WriteAt = 0;
                 offset += block;
                 count -= block;
+                TotalWritten += block;
                 ReadSemaphore.Add(block);
             }
         }
@@ -80,9 +82,9 @@ namespace Snappy.Tests
             int total = 0;
             while (count > 0)
             {
+                var block = ReadSemaphore.Take(Math.Min(count, Buffer.Length - ReadAt));
                 if (ClosedAt == TotalRead)
                     break;
-                var block = ReadSemaphore.Take(Math.Min(count, Buffer.Length - ReadAt));
                 Array.Copy(Buffer, ReadAt, buffer, offset, block);
                 ReadAt += block;
                 if (ReadAt == Buffer.Length)
@@ -102,9 +104,9 @@ namespace Snappy.Tests
             int total = 0;
             while (count > 0)
             {
+                var block = await ReadSemaphore.TakeAsync(Math.Min(count, Buffer.Length - ReadAt));
                 if (ClosedAt == TotalRead)
                     break;
-                var block = await ReadSemaphore.TakeAsync(Math.Min(count, Buffer.Length - ReadAt));
                 Array.Copy(Buffer, ReadAt, buffer, offset, block);
                 ReadAt += block;
                 if (ReadAt == Buffer.Length)
@@ -112,6 +114,7 @@ namespace Snappy.Tests
                 offset += block;
                 count -= block;
                 total += block;
+                TotalRead += block;
                 WriteSemaphore.Add(block);
             }
             return total;

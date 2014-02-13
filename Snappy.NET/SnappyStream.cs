@@ -164,6 +164,7 @@ namespace Snappy
                     Array.Copy(buffer, offset, Buffer, BufferUsage, append);
                     offset += append;
                     count -= append;
+                    BufferUsage += append;
                     if (BufferUsage == SnappyFrame.MaxFrameSize)
                         await FlushAsync(cancellation);
                 }
