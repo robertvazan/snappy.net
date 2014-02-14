@@ -98,11 +98,14 @@ namespace Snappy.Tests
                         }
                     }
 #if SNAPPY_ASYNC
-                    if (WriteRandom.Next(2) == 0)
+                    if (WriteRandom.Next(3) == 0)
                         compressor.FlushAsync().Wait();
                     else
 #endif
-                        compressor.Flush();
+                    {
+                        if (WriteRandom.Next(2) == 0)
+                            compressor.Flush();
+                    }
                 }
                 doneReading.WaitOne();
             }
