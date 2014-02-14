@@ -87,6 +87,8 @@ namespace Snappy.Tests
 #endif
                                 compressor.Write(file, 0, file.Length);
                         }
+                        if (WriteRandom.Next(10) == 0)
+                            compressor.Flush();
                     }
                     compressor.Flush();
                 }

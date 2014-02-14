@@ -12,7 +12,7 @@ namespace Snappy.Tests
 {
     class TestStream : Stream
     {
-        static Random Random = new Random(0);
+        static Random Random = new Random();
         readonly int Capacity = Random.Next(5000, 100000);
         readonly byte[] Buffer;
         readonly AsyncMultiSemaphore ReadSemaphore = new AsyncMultiSemaphore();
@@ -79,6 +79,7 @@ namespace Snappy.Tests
 
         public override int Read(byte[] buffer, int offset, int count)
         {
+            count = Random.Next(1, count + 1);
             int total = 0;
             while (count > 0)
             {
@@ -101,6 +102,7 @@ namespace Snappy.Tests
 #if SNAPPY_ASYNC
         public override async Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellation)
         {
+            count = Random.Next(1, count + 1);
             int total = 0;
             while (count > 0)
             {
