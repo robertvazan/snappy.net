@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Snappy.NET")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("Snappy compression for .NET")]
+[assembly: AssemblyDescription(".NET wrapper around native Snappy compression/decompression library. This library additionally implements Snappy framing/streaming format. Snappy achieves 250MB/s compression and 500MB/s decompression speeds at the cost of 20% to 100% bigger compressed files (compared to zlib).")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Snappy.NET")]
-[assembly: AssemblyCopyright("Copyright ©  2014")]
+[assembly: AssemblyCompany("Robert Važan")]
+[assembly: AssemblyProduct("Snappy compression for .NET")]
+[assembly: AssemblyCopyright("Copyright © 2014 Robert Važan")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyVersion("1.1.1.0")]
+[assembly: AssemblyFileVersion("1.1.1.0")]
