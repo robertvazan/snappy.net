@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Snappy.NET", "Snappy.NET\Snappy.NET.net20.csproj", "{F8FAF539-E365-4995-A695-499BA4AD31DB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Snappy.NET.net20", "Snappy.NET.net20\Snappy.NET.net20.csproj", "{F8FAF539-E365-4995-A695-499BA4AD31DB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Snappy.Tests", "Snappy.Tests\Snappy.Tests.net35.csproj", "{B8A25FB3-8EF8-490B-A7E8-56341623C163}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Snappy.Tests.net35", "Snappy.Tests.net35\Snappy.Tests.net35.csproj", "{B8A25FB3-8EF8-490B-A7E8-56341623C163}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

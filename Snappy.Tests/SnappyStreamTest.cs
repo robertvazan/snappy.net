@@ -110,6 +110,7 @@ namespace Snappy.Tests
             }
         }
 
+#if SNAPPY_ASYNC
         async Task ReadAllAsync(Stream stream, byte[] buffer, int offset, int count)
         {
             while (count > 0)
@@ -121,6 +122,7 @@ namespace Snappy.Tests
                 count -= read;
             }
         }
+#endif
 
         void CheckBuffers(byte[] expected, byte[] actual)
         {

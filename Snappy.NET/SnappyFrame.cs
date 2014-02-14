@@ -5,8 +5,8 @@ using System.Text;
 using System.Threading;
 #if SNAPPY_ASYNC
 using System.Threading.Tasks;
-using Crc32C;
 #endif
+using Crc32C;
 
 namespace Snappy
 {

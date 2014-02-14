@@ -4,12 +4,12 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{F8FAF539-E365-4995-A695-499BA4AD31DB}</ProjectGuid>
+    <ProjectGuid>{B8A25FB3-8EF8-490B-A7E8-56341623C163}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Snappy</RootNamespace>
-    <AssemblyName>Snappy.NET</AssemblyName>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <RootNamespace>Snappy.Tests</RootNamespace>
+    <AssemblyName>Snappy.Tests</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -21,7 +21,6 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -30,33 +29,35 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="nunit.framework, Version=2.6.3.13283, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <HintPath>..\packages\NUnit.2.6.3\lib\nunit.framework.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Crc32C.cs" />
-    <Compile Include="Native32.cs" />
-    <Compile Include="Native64.cs" />
-    <Compile Include="NativeProxy.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SnappyCodec.cs" />
-    <Compile Include="SnappyFrame.cs" />
-    <Compile Include="SnappyFrameType.cs" />
-    <Compile Include="SnappyStatus.cs" />
-    <Compile Include="SnappyStream.cs" />
-    <Compile Include="Utils.cs" />
+    <Compile Include="..\Snappy.Tests\AsyncMultiSemaphore.cs" />
+    <Compile Include="..\Snappy.Tests\Benchmark.cs" />
+    <Compile Include="..\Snappy.Tests\CodecThroughputTest.cs" />
+    <Compile Include="..\Snappy.Tests\Properties\AssemblyInfo.cs" />
+    <Compile Include="..\Snappy.Tests\SnappyCodecTest.cs" />
+    <Compile Include="..\Snappy.Tests\SnappyStreamTest.cs" />
+    <Compile Include="..\Snappy.Tests\TestStream.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="..\native\snappy32.dll" />
-    <EmbeddedResource Include="..\native\snappy64.dll" />
+    <ProjectReference Include="..\Snappy.NET.net20\Snappy.NET.net20.csproj">
+      <Project>{f8faf539-e365-4995-a695-499ba4ad31db}</Project>
+      <Name>Snappy.NET.net20</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
