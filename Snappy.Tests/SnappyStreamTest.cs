@@ -29,7 +29,7 @@ namespace Snappy.Tests
             stopwatch.Start();
             while (stopwatch.Elapsed < TimeSpan.FromSeconds(3))
             {
-                int count = Random.Next(1, 21);
+                int count = Random.Next(0, 21);
                 var sequence = Enumerable.Range(0, count).Select(n => testdata[Random.Next(testdata.Length)]).ToArray();
                 totalData += sequence.Sum(f => f.Length);
                 var stream = new TestStream();
@@ -88,9 +88,21 @@ namespace Snappy.Tests
                                 compressor.Write(file, 0, file.Length);
                         }
                         if (WriteRandom.Next(10) == 0)
-                            compressor.Flush();
+                        {
+#if SNAPPY_ASYNC
+                            if (WriteRandom.Next(2) == 0)
+                                compressor.FlushAsync().Wait();
+                            else
+#endif
+                                compressor.Flush();
+                        }
                     }
-                    compressor.Flush();
+#if SNAPPY_ASYNC
+                    if (WriteRandom.Next(2) == 0)
+                        compressor.FlushAsync().Wait();
+                    else
+#endif
+                        compressor.Flush();
                 }
                 doneReading.WaitOne();
             }

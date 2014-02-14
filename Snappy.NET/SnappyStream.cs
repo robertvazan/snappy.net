@@ -201,6 +201,7 @@ namespace Snappy
             try
             {
                 EnsureCompressionMode();
+                InitializeStream();
                 if (BufferUsage > 0)
                 {
                     Frame.SetCompressed(Buffer, 0, BufferUsage);
