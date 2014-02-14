@@ -45,10 +45,13 @@
     <Compile Include="AsyncMultiSemaphore.cs" />
     <Compile Include="Benchmark.cs" />
     <Compile Include="CodecThroughputTest.cs" />
+    <Compile Include="NullStream.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RepeaterStream.cs" />
     <Compile Include="SnappyCodecTest.cs" />
     <Compile Include="SnappyStreamTest.cs" />
-    <Compile Include="TestStream.cs" />
+    <Compile Include="StreamThroughputTest.cs" />
+    <Compile Include="RandomChunkStream.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

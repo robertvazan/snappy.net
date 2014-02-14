@@ -45,10 +45,21 @@
     <Compile Include="..\Snappy.Tests\AsyncMultiSemaphore.cs" />
     <Compile Include="..\Snappy.Tests\Benchmark.cs" />
     <Compile Include="..\Snappy.Tests\CodecThroughputTest.cs" />
+    <Compile Include="..\Snappy.Tests\NullStream.cs">
+      <Link>NullStream.cs</Link>
+    </Compile>
     <Compile Include="..\Snappy.Tests\Properties\AssemblyInfo.cs" />
+    <Compile Include="..\Snappy.Tests\RandomChunkStream.cs">
+      <Link>RandomChunkStream.cs</Link>
+    </Compile>
+    <Compile Include="..\Snappy.Tests\RepeaterStream.cs">
+      <Link>RepeaterStream.cs</Link>
+    </Compile>
     <Compile Include="..\Snappy.Tests\SnappyCodecTest.cs" />
     <Compile Include="..\Snappy.Tests\SnappyStreamTest.cs" />
-    <Compile Include="..\Snappy.Tests\TestStream.cs" />
+    <Compile Include="..\Snappy.Tests\StreamThroughputTest.cs">
+      <Link>StreamThroughputTest.cs</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Snappy.NET.net20\Snappy.NET.net20.csproj">

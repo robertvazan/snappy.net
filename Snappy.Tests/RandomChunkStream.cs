@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Snappy.Tests
 {
-    class TestStream : Stream
+    class RandomChunkStream : Stream
     {
         static Random Random = new Random();
         readonly int Capacity = Random.Next(5000, 100000);
@@ -29,7 +29,7 @@ namespace Snappy.Tests
         public override long Position { get { throw new NotSupportedException(); } set { throw new NotSupportedException(); } }
         public override long Length { get { throw new NotSupportedException(); } }
 
-        public TestStream()
+        public RandomChunkStream()
         {
             Buffer = new byte[Capacity + 1];
             WriteSemaphore.Add(Capacity);

@@ -32,7 +32,7 @@ namespace Snappy.Tests
                 int count = Random.Next(0, 21);
                 var sequence = Enumerable.Range(0, count).Select(n => testdata[Random.Next(testdata.Length)]).ToArray();
                 totalData += sequence.Sum(f => f.Length);
-                var stream = new TestStream();
+                var stream = new RandomChunkStream();
                 ManualResetEvent doneReading = new ManualResetEvent(false);
                 ThreadPool.QueueUserWorkItem(ctx =>
                 {
