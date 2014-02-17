@@ -39,11 +39,23 @@ namespace Snappy
 
         protected override void Dispose(bool disposing)
         {
-            if (Mode == CompressionMode.Compress)
-                Flush();
-            if (!LeaveOpen)
-                Stream.Close();
-            Stream = null;
+            try
+            {
+                if (Mode == CompressionMode.Compress)
+                    Flush();
+            }
+            finally
+            {
+                try
+                {
+                    if (!LeaveOpen)
+                        Stream.Close();
+                }
+                finally
+                {
+                    Stream = null;
+                }
+            }
         }
 
         public override int Read(byte[] buffer, int offset, int count)
@@ -338,7 +350,7 @@ namespace Snappy
             if (Stream == null)
                 throw new ObjectDisposedException("SnappyStream");
             if (BadStream)
-                throw new InvalidOperationException();
+                throw new InvalidOperationException("SnappyStream is in broken state due to previous error");
         }
 
         void ValidateRange(byte[] buffer, int offset, int count)
