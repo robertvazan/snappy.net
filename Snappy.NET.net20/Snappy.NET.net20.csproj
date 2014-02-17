@@ -31,6 +31,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DocumentationFile>bin\Release\Snappy.NET.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Crc32C.NET">

@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Snappy compression for .NET")]
-[assembly: AssemblyDescription(".NET wrapper around native Snappy compression/decompression library. This library additionally implements Snappy framing/streaming format. Snappy achieves 250MB/s compression and 500MB/s decompression speeds at the cost of 20% to 100% bigger compressed files (compared to zlib).")]
+[assembly: AssemblyTitle("Snappy for .NET")]
+[assembly: AssemblyDescription("Snappy is a compression algorithm reaching over 250MB/s compression and 500MB/s decompression speeds while still providing interesting compression ratio. This is Snappy .NET wrapper that automatically selects 32-bit or 64-bit embedded native DLL to perform the compression. A fast implementation of Snappy framing/streaming format is also provided.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Robert Važan")]
-[assembly: AssemblyProduct("Snappy compression for .NET")]
+[assembly: AssemblyProduct("Snappy for .NET")]
 [assembly: AssemblyCopyright("Copyright © 2014 Robert Važan")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.1.1.0")]
-[assembly: AssemblyFileVersion("1.1.1.0")]
+[assembly: AssemblyVersion("1.1.1.4")]
+[assembly: AssemblyFileVersion("1.1.1.4")]
