@@ -1,21 +1,27 @@
-<?xml version="1.0"?>
+Ôªø<?xml version="1.0"?>
 <package >
   <metadata>
     <id>Snappy.NET</id>
-    <version>1.1.1.4</version>
+    <version>1.1.1.6</version>
     <title>Snappy for .NET</title>
-    <authors>Robert Vaûan</authors>
-    <owners>Robert Vaûan</owners>
+    <authors>Robert Va≈æan</authors>
+    <owners>Robert Va≈æan</owners>
     <licenseUrl>http://snappy.angeloflogic.com/license/</licenseUrl>
     <projectUrl>http://snappy.angeloflogic.com/</projectUrl>
     <iconUrl>http://snappy.angeloflogic.com/images/nuget-icon.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Snappy is a compression algorithm reaching over 250MB/s compression and 500MB/s decompression speeds while still providing interesting compression ratio. This is Snappy .NET wrapper that automatically selects 32-bit or 64-bit embedded native DLL to perform the compression. A fast implementation of Snappy framing/streaming format is also provided.</description>
-    <releaseNotes>Initial release.</releaseNotes>
-    <copyright>Copyright (c) 2014 Robert Vaûan</copyright>
+    <description>Snappy is an extremely fast compressor (250MB/s) and decompressor (500MB/s). Snappy.NET is a P/Invoke wrapper around native Snappy, which additionally implements Snappy framing/streaming format.</description>
+    <releaseNotes>Updated description.</releaseNotes>
+    <copyright>Copyright (c) 2014 Robert Va≈æan</copyright>
     <tags>snappy, compression, codec, fast, io, lz4, zlib, interop</tags>
+    <dependencies>
+      <dependency id="Crc32C.NET" version="1.0.2.2" />
+    </dependencies>
   </metadata>
   <files>
-    <file src="..\snappy.h" target="\lib\native\include\snappy.h" />
+    <file src="Snappy.NET\bin\Release\Snappy.NET.dll" target="lib\net45" />
+    <file src="Snappy.NET\bin\Release\Snappy.NET.xml" target="lib\net45" />
+    <file src="Snappy.NET.net20\bin\Release\Snappy.NET.dll" target="lib\net20" />
+    <file src="Snappy.NET.net20\bin\Release\Snappy.NET.xml" target="lib\net20" />
   </files>
 </package>

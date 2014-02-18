@@ -4,3 +4,4 @@ bin
 *.suo
 native/*.dll
 packages/*
+*.nupkg

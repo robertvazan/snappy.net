@@ -10,18 +10,49 @@ using Crc32C;
 
 namespace Snappy
 {
+    /// <summary>
+    /// Represents single Snappy frame that conforms to Snappy framing format.
+    /// </summary>
     public class SnappyFrame
     {
+        /// <summary>
+        /// Maximum size of uncompressed data in Snappy frame. It's 64KB in current version of the format.
+        /// </summary>
         public const int MaxFrameSize = 1 << 16;
-        static readonly int MaxBufferUsage = SnappyCodec.GetMaxCompressedLength(MaxFrameSize);
+        /// <summary>
+        /// Stream identifier text. It is found in ASCII in identifier frame that leads the stream of Snappy frames.
+        /// </summary>
         public readonly byte[] StreamIdentifier = Encoding.ASCII.GetBytes("sNaPpY");
+        static readonly int MaxBufferUsage = SnappyCodec.GetMaxCompressedLength(MaxFrameSize);
         byte[] WordBuffer = new byte[4];
         byte[] Buffer;
         int BufferUsage;
 
+        /// <summary>
+        /// Type of Snappy frame. It contains decoded frame type upon deserialization. It is set automatically by Set* methods.
+        /// </summary>
         public SnappyFrameType Type { get; private set; }
+        /// <summary>
+        /// Data checksum is present in compressed and uncompressed frames. Otherwise it is zero.
+        /// It is computed automatically by Set* methods.
+        /// It is automatically checked when reading data through Data property or GetData method.
+        /// It is CRC-32C (Castagnoli) of the uncompressed data with final CRC obfuscated
+        /// with transformation ((crc &gt;&gt; 15) | (crc &lt;&lt; 17)) + 0xa282ead8.
+        /// </summary>
         public uint Checksum { get; private set; }
+        /// <summary>
+        /// Length of uncompressed data for data frames. Querying this property takes O(1) time.
+        /// For compressed and uncompressed data, data length is never larger than 64KB.
+        /// For padding frames, this property is equal to the length of padding data.
+        /// Identification frame has data length of 6.
+        /// Data length is automatically set by Set* methods and upon frame deserialization.
+        /// </summary>
         public int DataLength { get; private set; }
+        /// <summary>
+        /// Uncompressed data in the frame. It is available only for frame type Compressed or Uncompressed.
+        /// Querying this property triggers CRC check of the data, which might cause exceptions.
+        /// Returned data is never larger than 64KB.
+        /// </summary>
         public byte[] Data
         {
             get
@@ -34,11 +65,17 @@ namespace Snappy
             }
         }
 
+        /// <summary>
+        /// Create new Snappy frame. Frame is initialized to zero-length padding frame by default.
+        /// </summary>
         public SnappyFrame()
         {
             SetPadding(0);
         }
 
+        /// <summary>
+        /// Resets this frame to stream identifier frame. First frame in the stream must be identifier frame.
+        /// </summary>
         public void SetStreamIdentifier()
         {
             BufferUsage = 0;
@@ -47,9 +84,13 @@ namespace Snappy
             Type = SnappyFrameType.StreamIdentifier;
         }
 
+        /// <summary>
+        /// Resets this frame to padding frame of specified size.
+        /// </summary>
+        /// <param name="size">Size of padding data excluding the 4 bytes of frame header. Maximum padding size is 16MB.</param>
         public void SetPadding(int size)
         {
-            if (size < 0)
+            if (size < 0 || size >= (1 << 24))
                 throw new ArgumentOutOfRangeException();
             BufferUsage = 0;
             Checksum = 0;
@@ -57,11 +98,21 @@ namespace Snappy
             Type = SnappyFrameType.Padding;
         }
 
+        /// <summary>
+        /// Resets this frame to contain compressed data.
+        /// </summary>
+        /// <param name="data">Uncompressed data that is compressed by this method before being stored in the frame. Maximum data size is 64KB.</param>
         public void SetCompressed(byte[] data)
         {
             SetCompressed(data, 0, data.Length);
         }
 
+        /// <summary>
+        /// Resets this frame to contain compressed data.
+        /// </summary>
+        /// <param name="data">Input buffer containing uncompressed data that is compressed by this method before being stored in the frame.</param>
+        /// <param name="offset">Offset of uncompressed data in the input buffer.</param>
+        /// <param name="count">Size of uncompressed data in the input buffer. Maximum data size is 64KB.</param>
         public void SetCompressed(byte[] data, int offset, int count)
         {
             CheckRange(data, offset, count);
@@ -73,11 +124,21 @@ namespace Snappy
             Type = SnappyFrameType.Compressed;
         }
 
+        /// <summary>
+        /// Resets this frame to contain uncompressed data.
+        /// </summary>
+        /// <param name="data">Uncompressed data to store in the frame. Maximum data size is 64KB.</param>
         public void SetUncompressed(byte[] data)
         {
             SetUncompressed(data, 0, data.Length);
         }
 
+        /// <summary>
+        /// Resets this frame to contain uncompressed data.
+        /// </summary>
+        /// <param name="data">Input buffer containing uncompressed data to be stored in this frame.</param>
+        /// <param name="offset">Offset of uncompressed data in the input buffer.</param>
+        /// <param name="count">Size of uncompressed data in the input buffer. Maximum data size is 64KB.</param>
         public void SetUncompressed(byte[] data, int offset, int count)
         {
             CheckRange(data, offset, count);
@@ -90,11 +151,22 @@ namespace Snappy
             Type = SnappyFrameType.Uncompressed;
         }
 
+        /// <summary>
+        /// Retrieves data from the frame. Data is uncompressed before being stored in the output buffer.
+        /// CRC of the data is checked and CRC failure results in exception.
+        /// </summary>
+        /// <param name="buffer">Output buffer where uncompressed data is stored. It must be at least DataLength bytes long.</param>
         public void GetData(byte[] buffer)
         {
             GetData(buffer, 0);
         }
 
+        /// <summary>
+        /// Retrieves data from the frame. Data is uncompressed before being stored in the output buffer.
+        /// CRC of the data is checked and CRC failure results in exception.
+        /// </summary>
+        /// <param name="buffer">Output buffer where uncompressed data is stored. Buffer length minus offset must be at least DataLength bytes.</param>
+        /// <param name="offset">Offset into the output buffer where uncompressed data will be stored.</param>
         public void GetData(byte[] buffer, int offset)
         {
             if (Type == SnappyFrameType.Compressed)
@@ -104,11 +176,24 @@ namespace Snappy
                     throw new InvalidDataException();
             }
             else if (Type == SnappyFrameType.Uncompressed)
+            {
+                if (ComputeMasked(Buffer, offset, BufferUsage) != Checksum)
+                    throw new InvalidDataException();
                 Array.Copy(Buffer, 0, buffer, offset, BufferUsage);
+            }
             else
                 throw new InvalidOperationException();
         }
 
+        /// <summary>
+        /// Retrieves Snappy frame from underlying stream. Retrieved frame data is stored in properties of this object.
+        /// Return value indicates end of stream. Exceptions indicate data integrity errors and underlying stream errors.
+        /// </summary>
+        /// <param name="stream">Underlying stream that will be read by this method.</param>
+        /// <returns>
+        /// True if frame was successfully retrieved. False if there are no more frames in the stream, i.e. the end of stream has been reached.
+        /// Note that reaching the end of stream in the middle of the frame is considered an error and causes exception instead.
+        /// </returns>
         public bool Read(Stream stream)
         {
             try
@@ -165,8 +250,27 @@ namespace Snappy
         }
 
 #if SNAPPY_ASYNC
+        /// <summary>
+        /// Retrieves Snappy frame from underlying stream. Retrieved frame data is stored in properties of this object.
+        /// Return value indicates end of stream. Exceptions indicate data integrity errors and underlying stream errors.
+        /// </summary>
+        /// <param name="stream">Underlying stream that will be read by this method.</param>
+        /// <returns>
+        /// True if frame was successfully retrieved. False if there are no more frames in the stream, i.e. the end of stream has been reached.
+        /// Note that reaching the end of stream in the middle of the frame is considered an error and causes exception instead.
+        /// </returns>
         public Task<bool> ReadAsync(Stream stream) { return ReadAsync(stream, CancellationToken.None); }
 
+        /// <summary>
+        /// Retrieves Snappy frame from underlying stream. Retrieved frame data is stored in properties of this object.
+        /// Return value indicates end of stream. Exceptions indicate data integrity errors and underlying stream errors.
+        /// </summary>
+        /// <param name="stream">Underlying stream that will be read by this method.</param>
+        /// <param name="cancellation">Cancellation token that can be used to cancel the read operation.</param>
+        /// <returns>
+        /// True if frame was successfully retrieved. False if there are no more frames in the stream, i.e. the end of stream has been reached.
+        /// Note that reaching the end of stream in the middle of the frame is considered an error and causes exception instead.
+        /// </returns>
         public async Task<bool> ReadAsync(Stream stream, CancellationToken cancellation)
         {
             try
@@ -223,6 +327,10 @@ namespace Snappy
         }
 #endif
 
+        /// <summary>
+        /// Writes the frame into the underlying stream.
+        /// </summary>
+        /// <param name="stream">Underlying stream where the frame will be written.</param>
         public void Write(Stream stream)
         {
             if (Type != SnappyFrameType.Compressed && Type != SnappyFrameType.Uncompressed && Type != SnappyFrameType.StreamIdentifier && Type != SnappyFrameType.Padding)
@@ -254,8 +362,19 @@ namespace Snappy
         }
 
 #if SNAPPY_ASYNC
+        /// <summary>
+        /// Writes the frame into the underlying stream.
+        /// </summary>
+        /// <param name="stream">Underlying stream where the frame will be written.</param>
+        /// <returns>Task object indicating completion of the write.</returns>
         public Task WriteAsync(Stream stream) { return WriteAsync(stream, CancellationToken.None); }
 
+        /// <summary>
+        /// Writes the frame into the underlying stream.
+        /// </summary>
+        /// <param name="stream">Underlying stream where the frame will be written.</param>
+        /// <param name="cancellation">Cancellation token that can be used to cancel the write operation.</param>
+        /// <returns>Task object indicating completion of the write.</returns>
         public async Task WriteAsync(Stream stream, CancellationToken cancellation)
         {
             if (Type != SnappyFrameType.Compressed && Type != SnappyFrameType.Uncompressed && Type != SnappyFrameType.StreamIdentifier && Type != SnappyFrameType.Padding)

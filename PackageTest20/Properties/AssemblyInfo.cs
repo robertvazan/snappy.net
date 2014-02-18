@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Snappy for .NET")]
-[assembly: AssemblyDescription("Snappy is an extremely fast compressor (250MB/s) and decompressor (500MB/s). Snappy.NET is a P/Invoke wrapper around native Snappy, which additionally implements Snappy framing/streaming format.")]
+[assembly: AssemblyTitle("PackageTest20")]
+[assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Robert Važan")]
-[assembly: AssemblyProduct("Snappy for .NET")]
-[assembly: AssemblyCopyright("Copyright © 2014 Robert Važan")]
+[assembly: AssemblyCompany("")]
+[assembly: AssemblyProduct("PackageTest20")]
+[assembly: AssemblyCopyright("Copyright ©  2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("191eed7b-8bd8-41b7-b127-8f46e8f2e8e7")]
+[assembly: Guid("1ea115d8-6cce-41a9-94f6-ec230f2e2eaa")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.1.1.6")]
-[assembly: AssemblyFileVersion("1.1.1.6")]
+[assembly: AssemblyVersion("1.0.0.0")]
+[assembly: AssemblyFileVersion("1.0.0.0")]

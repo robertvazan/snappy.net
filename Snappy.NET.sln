@@ -1,11 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+VisualStudioVersion = 12.0.30110.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Snappy.NET", "Snappy.NET\Snappy.NET.csproj", "{F8FAF539-E365-4995-A695-499BA4AD31DB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Snappy.Tests", "Snappy.Tests\Snappy.Tests.csproj", "{B8A25FB3-8EF8-490B-A7E8-56341623C163}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PackageTest20", "PackageTest20\PackageTest20.csproj", "{40DDC4E8-D6A3-43BD-B48C-691EEA2291B4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PackageTest45", "PackageTest45\PackageTest45.csproj", "{8A468059-A05E-4544-B6B7-84F6246346C4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +25,14 @@ Global
 		{B8A25FB3-8EF8-490B-A7E8-56341623C163}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B8A25FB3-8EF8-490B-A7E8-56341623C163}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B8A25FB3-8EF8-490B-A7E8-56341623C163}.Release|Any CPU.Build.0 = Release|Any CPU
+		{40DDC4E8-D6A3-43BD-B48C-691EEA2291B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{40DDC4E8-D6A3-43BD-B48C-691EEA2291B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{40DDC4E8-D6A3-43BD-B48C-691EEA2291B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{40DDC4E8-D6A3-43BD-B48C-691EEA2291B4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8A468059-A05E-4544-B6B7-84F6246346C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8A468059-A05E-4544-B6B7-84F6246346C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8A468059-A05E-4544-B6B7-84F6246346C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8A468059-A05E-4544-B6B7-84F6246346C4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

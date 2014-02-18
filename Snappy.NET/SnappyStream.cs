@@ -10,6 +10,15 @@ using System.Threading.Tasks;
 
 namespace Snappy
 {
+    /// <summary>
+    /// Compression stream similar to GZipStream except this one uses Snappy compression.
+    /// This stream uses standard Snappy framing format that supports streams of unbounded size
+    /// and includes CRC checksums of all transmitted data.
+    /// This stream can operate in one of two modes: compression or decompression.
+    /// When compressing, use Write* methods. When decompressing, use Read* methods.
+    /// If SnappyStream is opened for compression and immediately closed, the resulting stream
+    /// will be a valid Snappy stream containing zero bytes of uncompressed data.
+    /// </summary>
     public class SnappyStream : Stream
     {
         Stream Stream;
@@ -22,14 +31,46 @@ namespace Snappy
         bool InitializedStream;
         bool BadStream;
 
+        /// <summary>
+        /// Gets a value indicating whether the current stream supports reading. True for decompression stream.
+        /// </summary>
         public override bool CanRead { get { return Stream != null && Mode == CompressionMode.Decompress && Stream.CanRead; } }
+        /// <summary>
+        /// Gets a value indicating whether the current stream supports writing. True for compression stream.
+        /// </summary>
         public override bool CanWrite { get { return Stream != null && Mode == CompressionMode.Compress && Stream.CanWrite; } }
+        /// <summary>
+        /// Gets a value indicating whether the current stream supports seeking. Always false for SnappyStream.
+        /// </summary>
         public override bool CanSeek { get { return false; } }
+        /// <summary>
+        /// Gets the length in bytes of the stream. Not supported in SnappyStream.
+        /// </summary>
         public override long Length { get { throw new NotSupportedException(); } }
+        /// <summary>
+        /// Gets or sets the position within the current stream. Not supported in SnappyStream.
+        /// </summary>
         public override long Position { get { throw new NotSupportedException(); } set { throw new NotSupportedException(); } }
 
+        /// <summary>
+        /// Creates new SnappyStream using specified mode of operation.
+        /// </summary>
+        /// <param name="stream">Underlying stream holding compressed data. It is automatically closed when SnappyStream is closed.</param>
+        /// <param name="mode">
+        /// Use mode Compress if SnappyStream is used to compress data and write it to the underlying stream.
+        /// Use mode Decompress if SnappyStream is used to decompress data that is retrieved in compressed form from the underlying stream.
+        /// </param>
         public SnappyStream(Stream stream, CompressionMode mode) : this(stream, mode, false) { }
 
+        /// <summary>
+        /// Creates new SnappyStream using specified mode of operation with an option to leave the underlying stream open.
+        /// </summary>
+        /// <param name="stream">Underlying stream holding compressed data.</param>
+        /// <param name="mode">
+        /// Use mode Compress if SnappyStream is used to compress data and write it to the underlying stream.
+        /// Use mode Decompress if SnappyStream is used to decompress data that is retrieved in compressed form from the underlying stream.
+        /// </param>
+        /// <param name="leaveOpen">False to close the underlying stream when SnappyStream is closed. True to leave the underlying stream open.</param>
         public SnappyStream(Stream stream, CompressionMode mode, bool leaveOpen)
         {
             Stream = stream;
@@ -37,18 +78,22 @@ namespace Snappy
             LeaveOpen = leaveOpen;
         }
 
+        /// <summary>
+        /// Dispose the stream. Remaining data is flushed and underlying stream is closed.
+        /// </summary>
+        /// <param name="disposing">True to release both managed and unmanaged resources. False to release only unmanaged resources.</param>
         protected override void Dispose(bool disposing)
         {
             try
             {
-                if (Mode == CompressionMode.Compress)
+                if (Mode == CompressionMode.Compress && disposing)
                     Flush();
             }
             finally
             {
                 try
                 {
-                    if (!LeaveOpen)
+                    if (!LeaveOpen && disposing)
                         Stream.Close();
                 }
                 finally
@@ -58,6 +103,17 @@ namespace Snappy
             }
         }
 
+        /// <summary>
+        /// Reads uncompressed data from underlying compressed stream.
+        /// </summary>
+        /// <param name="buffer">Output buffer where uncompressed data will be written.</param>
+        /// <param name="offset">Offset into the output buffer where uncompressed data will be written.</param>
+        /// <param name="count">Maximum size of uncompressed data to read.</param>
+        /// <returns>
+        /// Amount of data actually stored in the output buffer.
+        /// This might be less than the count parameter if end of stream is encountered.
+        /// Return value is zero if there is no more data in the stream.
+        /// </returns>
         public override int Read(byte[] buffer, int offset, int count)
         {
             try
@@ -87,6 +143,18 @@ namespace Snappy
         }
 
 #if SNAPPY_ASYNC
+        /// <summary>
+        /// Reads uncompressed data from underlying compressed stream.
+        /// </summary>
+        /// <param name="buffer">Output buffer where uncompressed data will be written.</param>
+        /// <param name="offset">Offset into the output buffer where uncompressed data will be written.</param>
+        /// <param name="count">Maximum size of uncompressed data to read.</param>
+        /// <param name="cancellation">Cancellation token that can be used to cancel the read operation.</param>
+        /// <returns>
+        /// Amount of data actually stored in the output buffer.
+        /// This might be less than the count parameter if end of stream is encountered.
+        /// Return value is zero if there is no more data in the stream.
+        /// </returns>
         public async override Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellation)
         {
             try
@@ -116,6 +184,10 @@ namespace Snappy
         }
 #endif
 
+        /// <summary>
+        /// Reads single byte from the underlying stream.
+        /// </summary>
+        /// <returns>Byte read from the stream or -1 if end of stream has been reached.</returns>
         public override int ReadByte()
         {
             try
@@ -135,6 +207,14 @@ namespace Snappy
             }
         }
 
+        /// <summary>
+        /// Compresses given uncompressed data and writes the compressed data to the underlying stream.
+        /// This method will buffer some of the data in order to compress 64KB at a time.
+        /// Use Flush method to write the data to the underlying stream immediately.
+        /// </summary>
+        /// <param name="buffer">Input buffer containing uncompressed data to be compressed and written to the underlying stream.</param>
+        /// <param name="offset">Offset into the input buffer where uncompressed data is located.</param>
+        /// <param name="count">Length of the uncompressed data in the input buffer. Zero-length data has no effect on the stream.</param>
         public override void Write(byte[] buffer, int offset, int count)
         {
             try
@@ -162,6 +242,16 @@ namespace Snappy
         }
 
 #if SNAPPY_ASYNC
+        /// <summary>
+        /// Compresses given uncompressed data and writes the compressed data to the underlying stream.
+        /// This method will buffer some of the data in order to compress 64KB at a time.
+        /// Use FlushAsync method to write the data to the underlying stream immediately.
+        /// </summary>
+        /// <param name="buffer">Input buffer containing uncompressed data to be compressed and written to the underlying stream.</param>
+        /// <param name="offset">Offset into the input buffer where uncompressed data is located.</param>
+        /// <param name="count">Length of the uncompressed data in the input buffer. Zero-length data has no effect on the stream.</param>
+        /// <param name="cancellation">Cancellation token that can be used to cancel the write operation.</param>
+        /// <returns>Task object indicating completion of the write.</returns>
         public async override Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellation)
         {
             try
@@ -189,6 +279,12 @@ namespace Snappy
         }
 #endif
 
+        /// <summary>
+        /// Writes single byte of uncompressed data to the stream and queues it for compression.
+        /// This method will buffer data in order to compress 64KB at a time.
+        /// Use Flush method to write the data to the underlying stream immediately.
+        /// </summary>
+        /// <param name="value">Byte of uncompressed data to be added to the stream.</param>
         public override void WriteByte(byte value)
         {
             try
@@ -208,6 +304,10 @@ namespace Snappy
             }
         }
 
+        /// <summary>
+        /// Flushes all data buffered by previous calls to Write* methods.
+        /// Remaining data is compressed and written to the underlying stream.
+        /// </summary>
         public override void Flush()
         {
             try
@@ -229,6 +329,12 @@ namespace Snappy
         }
 
 #if SNAPPY_ASYNC
+        /// <summary>
+        /// Flushes all data buffered by previous calls to Write* methods.
+        /// Remaining data is compressed and written to the underlying stream.
+        /// </summary>
+        /// <param name="cancellation">Cancellation token that can be used to cancel the flush operation.</param>
+        /// <returns>Task object indicating completion of the flush.</returns>
         public async override Task FlushAsync(CancellationToken cancellation)
         {
             try
@@ -250,7 +356,18 @@ namespace Snappy
         }
 #endif
 
+        /// <summary>
+        /// Sets the length of the current stream. Not supported in SnappyStream.
+        /// </summary>
+        /// <param name="value">The desired length of the current stream in bytes.</param>
         public override void SetLength(long value) { throw new NotSupportedException(); }
+
+        /// <summary>
+        /// Sets the position within the current stream. Not supported in SnappyStream.
+        /// </summary>
+        /// <param name="offset">A byte offset relative to the origin parameter.</param>
+        /// <param name="origin">A value of type SeekOrigin indicating the reference point used to obtain the new position.</param>
+        /// <returns></returns>
         public override long Seek(long offset, SeekOrigin origin) { throw new NotSupportedException(); }
 
         void InitializeStream()
