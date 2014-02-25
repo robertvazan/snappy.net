@@ -33,12 +33,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Crc32C.NET">
-      <HintPath>..\packages\Crc32C.NET.1.0.2.2\lib\net20\Crc32C.NET.dll</HintPath>
-    </Reference>
-    <Reference Include="Snappy.NET, Version=1.1.1.6, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Crc32C.NET, Version=1.0.4.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Snappy.NET.1.1.1.6\lib\net20\Snappy.NET.dll</HintPath>
+      <HintPath>..\packages\Crc32C.NET.1.0.4.0\lib\net20\Crc32C.NET.dll</HintPath>
+    </Reference>
+    <Reference Include="Snappy.NET, Version=1.1.1.7, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Snappy.NET.1.1.1.7\lib\net20\Snappy.NET.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />

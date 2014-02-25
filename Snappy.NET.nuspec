@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>Snappy.NET</id>
-    <version>1.1.1.6</version>
+    <version>1.1.1.7</version>
     <title>Snappy for .NET</title>
     <authors>Robert Važan</authors>
     <owners>Robert Važan</owners>
@@ -11,11 +11,11 @@
     <iconUrl>http://snappy.angeloflogic.com/images/nuget-icon.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Snappy is an extremely fast compressor (250MB/s) and decompressor (500MB/s). Snappy.NET is a P/Invoke wrapper around native Snappy, which additionally implements Snappy framing/streaming format.</description>
-    <releaseNotes>Updated description.</releaseNotes>
+    <releaseNotes>Fixed DLL unpacking exception and improved Windows XP compatibility.</releaseNotes>
     <copyright>Copyright (c) 2014 Robert Važan</copyright>
     <tags>snappy, compression, codec, fast, io, lz4, zlib, interop</tags>
     <dependencies>
-      <dependency id="Crc32C.NET" version="1.0.2.2" />
+      <dependency id="Crc32C.NET" version="1.0.4" />
     </dependencies>
   </metadata>
   <files>

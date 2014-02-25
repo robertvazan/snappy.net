@@ -32,7 +32,7 @@ namespace Snappy
             }
             if (!File.Exists(path) || !Utils.BuffersEqual(File.ReadAllBytes(path), contents))
             {
-                using (var output = File.Open(path, FileMode.CreateNew, FileAccess.Write, FileShare.None))
+                using (var output = File.Open(path, FileMode.Create, FileAccess.Write, FileShare.None))
                     output.Write(contents, 0, contents.Length);
             }
             var h = LoadLibrary(path);

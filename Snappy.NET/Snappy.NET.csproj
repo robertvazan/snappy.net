@@ -33,9 +33,9 @@
     <DocumentationFile>bin\Release\Snappy.NET.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Crc32C.NET, Version=1.0.2.2, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Crc32C.NET, Version=1.0.4.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Crc32C.NET.1.0.2.2\lib\net20\Crc32C.NET.dll</HintPath>
+      <HintPath>..\packages\Crc32C.NET.1.0.4.0\lib\net20\Crc32C.NET.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
