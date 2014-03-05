@@ -52,19 +52,19 @@ namespace Snappy
             return checked(snappy_validate_compressed_buffer(input, (uint)inLength));
         }
 
-        [DllImport("snappy32.dll")]
+        [DllImport("snappy32.dll", CallingConvention = CallingConvention.Cdecl)]
         static unsafe extern SnappyStatus snappy_compress(byte* input, uint input_length, byte* output, ref uint output_length);
 
-        [DllImport("snappy32.dll")]
+        [DllImport("snappy32.dll", CallingConvention = CallingConvention.Cdecl)]
         static unsafe extern SnappyStatus snappy_uncompress(byte* input, uint input_length, byte* output, ref uint output_length);
 
-        [DllImport("snappy32.dll")]
+        [DllImport("snappy32.dll", CallingConvention = CallingConvention.Cdecl)]
         static extern uint snappy_max_compressed_length(uint input_length);
 
-        [DllImport("snappy32.dll")]
+        [DllImport("snappy32.dll", CallingConvention = CallingConvention.Cdecl)]
         static unsafe extern SnappyStatus snappy_uncompressed_length(byte* input, uint input_length, out uint output_length);
 
-        [DllImport("snappy32.dll")]
+        [DllImport("snappy32.dll", CallingConvention = CallingConvention.Cdecl)]
         static unsafe extern SnappyStatus snappy_validate_compressed_buffer(byte* input, uint input_length);
     }
 }
