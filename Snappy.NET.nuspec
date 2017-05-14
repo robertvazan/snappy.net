@@ -6,9 +6,9 @@
     <title>Snappy for .NET</title>
     <authors>Robert Važan</authors>
     <owners>Robert Važan</owners>
-    <licenseUrl>http://snappy.angeloflogic.com/license/</licenseUrl>
-    <projectUrl>http://snappy.angeloflogic.com/</projectUrl>
-    <iconUrl>http://snappy.angeloflogic.com/images/nuget-icon.png</iconUrl>
+    <licenseUrl>https://snappy.machinezoo.com/license/</licenseUrl>
+    <projectUrl>https://snappy.machinezoo.com/</projectUrl>
+    <iconUrl>https://snappy.machinezoo.com/images/nuget-icon.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Snappy is an extremely fast compressor (250MB/s) and decompressor (500MB/s). Snappy.NET is a P/Invoke wrapper around native Snappy, which additionally implements Snappy framing/streaming format.</description>
     <releaseNotes>Fixed calling convention.</releaseNotes>
