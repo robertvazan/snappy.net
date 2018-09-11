@@ -1,3 +1,4 @@
+// Part of Snappy for Windows: https://snappy.machinezoo.com/
 ﻿using Snappy;
 using System;
 using System.Collections.Generic;

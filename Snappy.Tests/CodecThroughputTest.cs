@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+// Part of Snappy for Windows: https://snappy.machinezoo.com/
+﻿﻿using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
