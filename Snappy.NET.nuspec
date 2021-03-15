@@ -12,7 +12,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Snappy is an extremely fast compressor (250MB/s) and decompressor (500MB/s). Snappy.NET is a P/Invoke wrapper around native Snappy, which additionally implements Snappy framing/streaming format.</description>
     <releaseNotes>Fixed calling convention.</releaseNotes>
-    <copyright>Copyright (c) 2014 Robert Važan</copyright>
+    <copyright>Copyright (c) 2014-2021 Robert Važan</copyright>
     <tags>snappy, compression, codec, fast, io, lz4, zlib, interop</tags>
     <dependencies>
       <dependency id="Crc32C.NET" version="1.0.5" />
