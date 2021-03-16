@@ -7,7 +7,7 @@ It includes raw block compression as well as an implementation of Snappy framing
 * Download: see [Tutorial for .NET](https://snappy.machinezoo.com/#net)
 * Sources: [GitHub](https://github.com/robertvazan/snappy.net), [Bitbucket](https://bitbucket.org/robertvazan/snappy.net)
 * Issues: [GitHub](https://github.com/robertvazan/snappy.net/issues), [Bitbucket](https://bitbucket.org/robertvazan/snappy.net/issues)
-* License: [BSD license](https://opensource.org/licenses/BSD-3-Clause)
+* License: [BSD license](LICENSE)
 * See also [upstream Snappy](https://google.github.io/snappy/)
 
 ***
