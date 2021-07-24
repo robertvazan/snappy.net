@@ -1,5 +1,7 @@
 # Snappy for .NET #
 
+**UNMAINTAINED**: This library is no longer maintained, because I rarely use Windows or C++ these days. It has not been updated in years. You are welcome to adopt the library if you find it useful.
+
 Snappy.NET is a .NET wrapper for [Snappy compression algorithm](https://google.github.io/snappy/).
 It includes raw block compression as well as an implementation of Snappy framing format.
 
